@@ -81,5 +81,77 @@ describe("Given I am connected as an employee", () => {
         document.body.innerHTML = "";
       });
     });
+
+    /* describe("When I click ont the eye icon", () => {
+      test("Then a modal should open, displaying the picture of the bill", async () => {
+        Object.defineProperty(window, "localStorage", {
+          value: localStorageMock,
+        });
+        window.localStorage.setItem(
+          "user",
+          JSON.stringify({
+            type: "Employee",
+          })
+        );
+        document.body.innerHTML = BillsUI({ data: bills });
+        const onNavigate = (pathname) => {
+          document.body.innerHTML = ROUTES({ pathname });
+        };
+        const store = null;
+        const billsContainer = new Bills({
+          document,
+          onNavigate,
+          store,
+          bills,
+          localStorage: window.localStorage,
+        });
+
+        $.fn.modal = jest.fn();
+      const handleClickIconEye = jest.fn(billsContainer.handleClickIconEye);
+        const iconEye = screen.getAllByTestId("icon-eye")[0];
+        iconEye.addEventListener("click", handleClickIconEye);
+        userEvent.click(iconEye);
+        expect(handleClickIconEye).toHaveBeenCalled();
+        expect(screen.getByTestId("modaleFile")).toBeTruthy();
+        document.body.innerHTML = "";
+      });
+    }); */
+
+    describe("When I click on the icon eye", () => {
+      test("Then a modal should open, displaying the picture of the bill", () => {
+        Object.defineProperty(window, "localStorage", {
+          value: localStorageMock,
+        });
+        window.localStorage.setItem(
+          "user",
+          JSON.stringify({
+            type: "Employee",
+          })
+        );
+        document.body.innerHTML = BillsUI({ data: bills });
+        const onNavigate = (pathname) => {
+          document.body.innerHTML = ROUTES({ pathname });
+        };
+        const store = null;
+        const billsContainer = new Bills({
+          document,
+          onNavigate,
+          store,
+          bills,
+          localStorage: window.localStorage,
+        });
+
+        $.fn.modal = jest.fn(); // this dollar sign is a global function that comes from jQuery
+        const handleClickIconEye = jest.fn(billsContainer.handleClickIconEye);
+        const iconEye = screen.getAllByTestId("icon-eye")[0];
+        iconEye.addEventListener("click", handleClickIconEye(iconEye));
+        userEvent.click(iconEye);
+        expect(handleClickIconEye).toHaveBeenCalled();
+
+        const billPictureModal = screen.getByTestId("modaleFile");
+        expect(billPictureModal).toBeTruthy();
+        document.body.innerHTML = "";
+      });
+    });
   });
 });
