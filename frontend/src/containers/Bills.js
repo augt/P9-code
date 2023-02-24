@@ -51,7 +51,8 @@ export default class {
             } catch (e) {
               // if for some reason, corrupted data was introduced, we manage here failing formatDate function
               // log the error and return unformatted date in that case
-              console.log(e, "for", doc);
+              /* istanbul ignore next */
+              console.log(e, "for", doc); //! there is no point in testing console logs
               return {
                 ...doc,
                 date: doc.date,
@@ -59,6 +60,7 @@ export default class {
               };
             }
           });
+          /* istanbul ignore next */
           console.log("length", bills.length);
           return bills;
         });
