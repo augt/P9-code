@@ -16,36 +16,43 @@ export default class NewBill {
     new Logout({ document, localStorage, onNavigate })
   }
   handleChangeFile = e => {
-    e.preventDefault()
-    const file = this.document.querySelector(`input[data-testid="file"]`).files[0]
-    const filePath = e.target.value.split(/\\/g)
-    const fileName = filePath[filePath.length-1]
-    const splitFilename = fileName.split(".");
-    const fileExtension = splitFilename[splitFilename.length-1]
+    e.preventDefault();
+    const file = this.document.querySelector(`input[data-testid="file"]`).files[0];
+    const fileName = file.name;
+    const formData = new FormData();
+    const email = JSON.parse(localStorage.getItem("user")).email;
+    const allowedExtensions = /(\.jpg|\.jpeg|\.png|\.JPG|\.JPEG|\.PNG)$/i;
 
-    if (fileExtension === "png" || fileExtension === "jpg" || fileExtension === "jpeg"){
-      const formData = new FormData()
-          const email = JSON.parse(localStorage.getItem("user")).email
-          formData.append('file', file)
-          formData.append('email', email)
-
-          this.store
-            .bills()
-            .create({
-              data: formData,
-              headers: {
-                noContentType: true
-              }
-            })
-            .then(({fileUrl, key}) => {
-              console.log(fileUrl)
-              this.billId = key
-              this.fileUrl = fileUrl
-              this.fileName = fileName
-            }).catch(error => console.error(error))
-    } else {
-      alert(`Seules les images avec une extension ".jpg", ".jpeg" ou ".png" peuvent être renseignées.`)
+    if (this.document.querySelector(".error-message")) {
+      this.document.querySelector(".error-message").remove();
     }
+
+    if (fileName.match(allowedExtensions) == null) {
+      const errorMessage = this.document.createElement("div");
+      errorMessage.classList.add("error-message");
+      errorMessage.textContent = `Seules les images avec une extension ".jpg", ".jpeg" ou ".png" peuvent être renseignées.`;
+      const fileInput = this.document.querySelector(`input[data-testid="file"]`);
+      fileInput.parentNode.appendChild(errorMessage);
+      this.document.querySelector(`input[data-testid="file"]`).value = "";
+      return false;
+    }
+    formData.append('file', file);
+    formData.append('email', email);
+
+    this.store
+      .bills()
+      .create({
+        data: formData,
+        headers: {
+          noContentType: true
+        }
+      })
+      .then(({ fileUrl, key }) => {
+        //console.log(fileUrl);
+        this.billId = key;
+        this.fileUrl = fileUrl;
+        this.fileName = fileName;
+      }).catch(error => console.error(error));
     
   }
   handleSubmit = e => {
