@@ -49,7 +49,7 @@ describe("Given I am connected as an employee", () => {
       expect(dates).toEqual(datesSorted);
     });
 
-    describe("When I click ont the new bill button", () => {
+    describe("When I click on the new bill button", () => {
       test("Then I should be sent to the new bill form page", async () => {
         Object.defineProperty(window, "localStorage", {
           value: localStorageMock,
